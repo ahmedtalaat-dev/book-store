@@ -23,7 +23,8 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 app.use("/users", require("./routes/userRouter"));
-app.use("/admin", require("./routes/admin"));
+app.use("/admin", require("./routes/adminRouter"));
+app.use("/books", require("./routes/bookRouter"));
 
 app.use("/images", express.static("images"));
 
