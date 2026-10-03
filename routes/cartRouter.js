@@ -3,7 +3,7 @@ const router = express.Router();
 const Cart = require("../models/cartSchema");
 const Book = require("../models/bookSchema");
 
-const { cookieAuth } = require("../auth/middleware");
+const { cookieAuth } = require("../middleware/auth");
 
 router.get("/", cookieAuth, async (req, res) => {
   try {
