@@ -3,45 +3,43 @@ const mongoose = require("mongoose");
 const BookSchema = new mongoose.Schema({
   title: {
     type: String,
-    require: true,
+    required: true,
   },
+
   author: {
     type: String,
-    require: true,
+    required: true,
   },
 
   description: {
     type: String,
-    require: true,
+    required: true,
   },
 
   price: {
     type: Number,
-    require: true,
+    required: true,
   },
 
   stock: {
     type: Number,
-    require: true,
+    required: true,
     default: 0,
   },
 
-  isFeautred: {
+  isFeatured: {
     type: Boolean,
-
     default: false,
   },
 
   isOnSale: {
     type: Boolean,
-
     default: false,
   },
 
   discountPercent: {
-    type: String,
-
-    default: false,
+    type: Number,
+    default: 0,
   },
 
   category: {
@@ -54,4 +52,4 @@ const BookSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Book", BookSchema);
+module.exports = mongoose.models.Book || mongoose.model("Book", BookSchema);
