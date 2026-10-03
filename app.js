@@ -25,6 +25,8 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use("/users", require("./routes/userRouter"));
 app.use("/admin", require("./routes/adminRouter"));
 app.use("/books", require("./routes/bookRouter"));
+app.use("/categories", require("./routes/categoryRouter"));
+app.use("/cart", require("./routes/cartRouter"));
 
 app.use("/images", express.static("images"));
 
