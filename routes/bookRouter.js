@@ -1,12 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const Book = require("../models/bookSchema");
 const multer = require("multer");
 
+const {
+  createBook,
+  getBooks,
+  getBookById,
+  updateBook,
+  deleteBook,
+} = require("../controllers/bookController");
+
+// Multer configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./images");
   },
+
   filename: function (req, file, cb) {
     const filename = Date.now() + "-" + file.fieldname;
     cb(null, filename);
@@ -15,102 +24,24 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
 });
 
-router.post("/createBook", upload.single("coverImage"), async (req, res) => {
-  try {
-    const {
-      title,
-      author,
-      description,
-      price,
-      stock,
-      isFeautred,
-      category,
-      discountPercent,
-      isOnSale,
-    } = req.body;
+// Create Book
+router.post("/createBook", upload.single("coverImage"), createBook);
 
-    if (!title || !author || !description || !price || !stock) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
+// Get All Books
+router.get("/getBooks", getBooks);
 
-    const newBook = new Book({
-      title,
-      author,
-      description,
-      price,
-      stock,
-      isFeautred,
-      isOnSale,
-      discountPercent,
-      category,
-      coverImage: req.file?.filename,
-    });
+// Get Single Book
+router.get("/:id", getBookById);
 
-    await newBook.save();
-    res
-      .status(201)
-      .json({ message: "Book created successfully", book: newBook });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+// Update Book
+router.put("/updateBook/:id", updateBook);
 
-router.get("/getBooks", async (req, res) => {
-  try {
-    const books = await Book.find().populate("category", "name");
-
-    return res.json(books);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.get("/:id", async (req, res) => {
-  try {
-    const book = await Book.findById(req.params.id).populate(
-      "category",
-      "name",
-    );
-    if (!book) {
-      return res.status(404).json({ message: "Book Is Not Found" });
-    }
-
-    return res.json(book);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.put("/updateBook/:id", async (req, res) => {
-  try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    }).populate("category", "name");
-
-    if (!book) {
-      return res.status(404).json({ message: "Book not found" });
-    }
-    res.json({ message: "Book updated successfully", book });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.delete("/deleteBook/:id", async (req, res) => {
-  try {
-    const book = await Book.findByIdAndDelete(req.params.id);
-
-    if (!book) {
-      return res.status(404).json({ message: "Book not found" });
-    }
-
-    res.json({ message: "Book deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+// Delete Book
+router.delete("/deleteBook/:id", deleteBook);
 
 module.exports = router;
