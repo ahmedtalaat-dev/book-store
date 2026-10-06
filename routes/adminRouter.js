@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Book = require("../models/BookSchema");
+const Book = require("../models/bookSchema");
 const multer = require("multer");
 const { cookieAuth } = require("../middleware/auth");
 
